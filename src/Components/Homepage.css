@@ -1,3 +1,6 @@
+body, html {
+  overflow-x: hidden;
+}
 .search-bar {
       background-color: white;
       border-radius: 10px;
@@ -35,6 +38,7 @@
       border-radius: 10px;
       /* overflow: hidden; */
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      box-sizing: border-box;
       background-color: white;
     }
     .property-card img {
@@ -76,3 +80,18 @@
       font-size: 14px;
       color: gray;
     }
+.img-hover-scale{
+  transform: scale(1.0);
+  transition: transform 0.5s;
+}    
+.img-hover-scale:hover{
+  transform: scale(1.05);
+}
+.hide-scrollbar{
+  scrollbar-width: none;     
+  -ms-overflow-style: none; 
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;              
+}
+ 

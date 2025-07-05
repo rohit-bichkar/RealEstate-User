@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import banner1 from '../assets/Banner1.png'
 import banner2 from '../assets/Banner2.png'
@@ -6,6 +6,11 @@ import banner3 from '../assets/Banner3.png'
 import testimonials from '../assets/Testimonial1.png'
 import testimonials2 from '../assets/Testinomial2.png'
 import testimonials3 from '../assets/Testimonial3.png'
+import img1 from '../assets/313_rectangle.png'
+import img2 from '../assets/314_rectangle.png'
+import img3 from '../assets/315_rectangle.png'
+import img4 from '../assets/316_rectangle.png'
+import img5 from '../assets/317_rectangle.png'
 import dot from '../assets/499_frame.png'
 import './Homepage.css'
 import { getAllProperties } from '../API/api'
@@ -19,6 +24,7 @@ const HomePage = () => {
     const[name,setName] = useState('')
     const[email,setEmail] = useState('');
     const[properties,setProperties] = useState([])
+    const[visibleCount,setVisibleCount] = useState(6);
     const fetchgetAllProperties =async()=>{
         try {
             const response =await getAllProperties();
@@ -29,6 +35,13 @@ const HomePage = () => {
             console.error('Error fetching properties:', error);
             
         }
+    }
+
+    const featuredRef = useRef(null);
+    const scrollRight = ()=>{
+      if(featuredRef.current){
+        featuredRef.current.scrollBy({left: 350, behavior:'smooth'});
+      }
     }
 
     useEffect(()=>{
@@ -88,12 +101,15 @@ const HomePage = () => {
     </div>
 
     <div className='container mt-5'>
-        <h1 className='text-center'>Explore Our Properties</h1>
+        <h1 className='text-center #explore'>Explore Our Properties</h1>
         <p className='text-secondary text-center'>Enjoy the variety of 100+ Different properties in the market!</p>
 
-       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', justifyContent: 'center' }}>
-      {properties.map((property, index) => (
-        <div key={index} className="property-card" style={{ width: '300px' }}>
+       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', justifyContent: 'center',overflowX: 'hidden' }}>
+      {properties.slice(0,visibleCount).map((property, index) => (
+        <div key={index} className="property-card" style={{  width: '100%',
+    maxWidth: '350px', 
+    minWidth: '260px',
+    boxSizing: 'border-box' }}>
           <div className="position-relative">
             <img src={property.image} alt={property.title} style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
             <span className="property-status">FOR RENT</span>
@@ -108,12 +124,37 @@ const HomePage = () => {
         </div>
       ))}
     </div>
-    <button className='btn btn-outline-primary fs-4 mt-5' style={{marginLeft:'45%'}}>Load More</button>
+    <button className='btn btn-outline-primary fs-4 mt-5' style={{marginLeft:'45%'}} onClick={()=> setVisibleCount(prev => prev +6)} disabled={visibleCount >= properties.length}>{visibleCount >= properties.length ? 'No More Properties' : 'Load More'}</button>
     </div>
 
-    <div className='container' style={{marginTop:'10%'}}>
-    <img src={banner2}/>
-    </div>
+   <div className='container d-flex gap-4' style={{marginTop:'10%'}}>
+   <div className='left'>
+      <img src={img1} className='img-hover-scale'></img>
+   </div>
+
+   <div className='right'>
+      <div className='d-flex align-items-center' style={{gap:'20px'}}>
+        <img src={img2} className='img-hover-scale'></img>
+        <div>
+            <h2>Wide Selection Of Properties</h2>
+         <p>Lorem Ipsum is simply dummy text of<br/> the printing and typesetting industry.<br/> Lorem Ipsum has been the industry's standard.</p>
+        </div>
+         
+      </div>
+
+      <div className='d-flex gap-2 mt-3'>
+        <img src={img5} style={{width:'440px',height:'360px'}} className='img-hover-scale'></img>
+        <div>
+          <img src={img3} style={{width:'200px',height:'180px'}} className='img-hover-scale'/>
+           <img src={img4} style={{width:'200px',height:'180px'}} className='img-hover-scale'/>
+        </div>
+        
+      </div>
+   </div>
+
+   </div>
+
+
 
     <div  style={{ backgroundImage: `url(${banner3})`, height: '690px', backgroundSize: 'cover', backgroundPosition: 'center',marginTop:'10%' }}>
         <div className='row'>
@@ -203,10 +244,34 @@ const HomePage = () => {
     <div className='container mt-5'>
       <h1 className='text-center'>Featured Listings</h1>
         <p className='text-secondary text-center'>Browse our wide range of featured properties.</p>
+            <div style={{ position: 'relative' }}>
+          {/* Right arrow button */}
+          <button
+            onClick={scrollRight}
+            style={{
+              position: 'absolute',
+              right: 0,
+              top: '40%',
+              zIndex: 2,
+              background: '#fff',
+              border: '1px solid #ccc',
+              borderRadius: '50%',
+              width: '40px',
+              height: '40px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+              cursor: 'pointer'
+            }}
+            aria-label="Scroll right"
+          >
+            <span style={{ fontSize: '1.5rem' }}>&rarr;</span>
+          </button>
 
-         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '50px', justifyContent: 'center' }}>
-      {properties.slice(4,7).map((property, index) => (
-        <div key={index} className="property-card" style={{ width: '300px' }}>
+         <div ref={featuredRef} className='hide-scrollbar' style={{ display: 'flex', flexWrap: 'nowrap', gap: '50px',overflow:'auto',scrollBehavior:'smooth',paddingBottom:'10px' }}>
+      {properties.slice(3,10).map((property, index) => (
+        <div key={index} className="property-card" style={{ minWidth: '300px',maxWidth:'300px' }}>
           <div className="position-relative">
             <img src={property.image} alt={property.title} style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
             <span className="property-status">FOR RENT</span>
@@ -216,12 +281,13 @@ const HomePage = () => {
             <p><i className="bi bi-geo-alt"></i> {property.description}</p>
             <p><i className="bi bi-geo-alt"></i> {property.location}</p>
             <p className='text-black'> ${property.price}</p>
-
+           <Link to={`/propertycard-details/${property.id}`}> <button className='btn btn-primary'>View</button></Link>
           </div>
         </div>
       ))}
     </div>
-    <img src={dot} className='mt-3' style={{marginLeft:'45%'}}/>
+    </div>
+    <img src={dot} className='mt-3' style={{marginLeft:'45%',cursor:'pointer'}} onClick={scrollRight}/>
     </div>
 
 

@@ -1,25 +1,28 @@
 import { useState } from 'react'
 
 import './App.css'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
 import MainNavbar from './Pages/MainNavbar'
 import HomePage from './Components/HomePage'
 import Footer from './Pages/Footer'
 import PropertyDetails from './Components/PropertyDetails'
+import LoginPage from './Pages/LoginPage'
+import RegisterPage from './Pages/RegisterPage'
 
 function App() {
-
+const location = useLocation()
+const hideNavAndFooter = location.pathname === '/login'
 
   return (
     <>
-     <BrowserRouter>
-      <MainNavbar></MainNavbar>
+     {!hideNavAndFooter && <MainNavbar />}
       <Routes>
-        <Route path='/' element={<HomePage/>}></Route>
-        <Route path='/propertycard-details/:ID/*' element={<PropertyDetails/>}></Route>
+        <Route path='/login' element={<LoginPage />} />
+        <Route path='/register' element={<RegisterPage/>}></Route>
+        <Route path='/' element={<HomePage />} />
+        <Route path='/propertycard-details/:ID/*' element={<PropertyDetails />} />
       </Routes>
-      <Footer/>
-     </BrowserRouter>
+      {!hideNavAndFooter && <Footer />}
     </>
   )
 }

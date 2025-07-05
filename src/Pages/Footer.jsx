@@ -1,5 +1,5 @@
 import React from "react";
-import estatelogo from '../assets/EstateLogo.png'
+import realestatelogo from '../assets/realestatelogo.png'
 
 const Footer = () => {
   return (
@@ -18,7 +18,7 @@ const Footer = () => {
             <div class="row text-center text-md-start">
                
                 <div class="col-md-4 mb-3" >
-                <img src={estatelogo} style={{width:'200px',height:'80px'}}/>
+                <img src={realestatelogo} style={{width:'170px',height:'100px'}}/>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam nonummy nibh euismod lorem ipsum dolor sit amet.</p>
                 </div>
 

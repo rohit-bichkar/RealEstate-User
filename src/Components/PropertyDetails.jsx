@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { getAllPropertiesById } from '../API/api'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { Form,Container,Button } from 'react-bootstrap';
 import { FaCheckCircle } from "react-icons/fa";
 import { getAllProperties } from '../API/api';
-import { createProperties } from '../API/api';
-import { ToastContainer,toast } from 'react-toastify';
+import InquiryFrom from '../Pages/InquiryFrom';
+
 
 
 const PropertyDetails = () => {
-    const[name,setName] = useState('');
-    const[email,setEmail] = useState('')
-    const[phone,setPhone] = useState('');
-    const[message,setMessage] = useState('');
+    
     const { ID } = useParams();
     const [property, setProperty] = useState(null);
     const[properties,setProperties] = useState([])
+    
+    const isLoggedIn = !!localStorage.getItem('token'); 
 
      const fetchgetAllProperties =async()=>{
             try {
@@ -57,35 +56,6 @@ const PropertyDetails = () => {
   : '';
 
 
-  const handleSubmit = async(e)=>{
-         e.preventDefault();
-
-    const inquiryData = {
-        name,
-        email,
-        phone: phone, // or phoneno if you use that state
-        message
-    };
-
-    try {
-        const response = await createProperties(inquiryData);
-
-        if (response?.success) {
-            toast.success('Form submitted, You will get a Call from us!');
-            setName('');
-            setEmail('');
-            setPhone('');
-            setMessage('');
-        } else {
-            toast.error(response?.message || 'Error submitting form');
-        }
-    } catch (error) {
-        console.error('Error submitting inquiry:', error);
-        toast.error('Something went wrong. Please try again.');
-    }
-  }
-
-
     return (
         <>
         <div className='container mt-5 d-flex justify-content-between'> 
@@ -111,62 +81,18 @@ const PropertyDetails = () => {
                     <img src={imageSrc} style={{width:"750px",height:'590px'}}/>
                 </div>
 
-                <div className='col md-5'>
-                <Container className=" bg-light shadow p-4" style={{ maxWidth: '400px',marginTop: '2%', borderRadius: '15px' }}>
-     <p className='fs-3 border-bottom'>Submit an Inquiry</p>
-      <Form onSubmit={handleSubmit} >
-        <p className='fs-4'>Property Consultant</p>
-        <p className='text-secondary'>Martha Stewart</p>
-
-      <Form.Group controlId="formName" className="mb-3">
-          <Form.Label>Name</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="John Doe" 
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </Form.Group>
-        <Form.Group controlId="formEmail" className="mb-3">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="john@gamil.com" 
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </Form.Group>
-
-        <Form.Group controlId="formPhoneNumber" className="mb-3">
-          <Form.Label>Phone (Optional)</Form.Label>
-          <Form.Control
-            type="number"
-            placeholder="+1 (123) 456-0509"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            required
-          />
-        </Form.Group>
-        <Form.Group controlId="formMessage" className="mb-3">
-  <Form.Label>Message</Form.Label>
-  <Form.Control
-    as="textarea"
-    rows={3}
-    placeholder="Type your message here"
-    value={message}
-    onChange={(e) => setMessage(e.target.value)}
-    required
-  />
-</Form.Group>
-
-        <Button variant="primary" type="submit"  className="w-100">
-          Login
-        </Button>
-      </Form>
-      <ToastContainer/>
-    </Container>
+                <div className='col md-5' style={{marginTop:''}}>
+                 {isLoggedIn ? (
+        <InquiryFrom propertyId={ID} />
+      ) : (
+        <div className='container shadow p-5 rounded'>
+          <h2 className='text-center'>Login to Inquiry</h2>
+          <p className='text-center'>Please login to submit an inquiry about this property and connect with our consultant</p>
+          <Link to='/login' state={{ from: `/propertycard-details/${ID}` }}>
+            <button className='btn btn-primary w-50' style={{marginLeft:'25%'}}>Login Now</button>
+          </Link>
+        </div>
+      )}
                 </div>
             </div>
         </div>
@@ -175,8 +101,8 @@ const PropertyDetails = () => {
  <div class="container mt-4">
    
     <div class="card border-0 shadow-sm">
-      <div class="card-header bg-secondary text-dark">
-        <h5 class="mb-0">Overview</h5>
+      <div class="card-header text-dark" style={{backgroundColor:'#F2F2F2'}}>
+        <h5 class="mb-0 fw-bold">Overview</h5>
       </div>
       <div class="card-body">
         <div class="row text-center">
@@ -219,8 +145,8 @@ const PropertyDetails = () => {
   <div class="container mt-4">
    
     <div class="card border-0 shadow-sm">
-      <div class="card-header bg-secondary text-dark">
-        <h5 class="mb-0">Address</h5>
+      <div class="card-header  text-dark" style={{backgroundColor:'#F2F2F2'}}>
+        <h5 class="mb-0 fw-bold">Address</h5>
       </div>
       <div class="card-body">
         <div class="row">
@@ -263,8 +189,8 @@ const PropertyDetails = () => {
    <div class="container mt-4">
    
     <div class="card border-0 shadow-sm">
-      <div class="card-header bg-secondary text-dark">
-        <h5 class="mb-0">Description</h5>
+      <div class="card-header  text-dark" style={{backgroundColor:'#F2F2F2'}}>
+        <h5 class="mb-0 fw-bold">Description</h5>
       </div>
       <div class="card-body">
             <p class="mb-1 ">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
@@ -278,8 +204,8 @@ const PropertyDetails = () => {
    <div class="container mt-4">
    
     <div class="card border-0 shadow-sm">
-      <div class="card-header bg-secondary text-dark">
-        <h5 class="mb-0">Details</h5>
+      <div class="card-header text-dark" style={{backgroundColor:'#F2F2F2'}}>
+        <h5 class="mb-0 fw-bold">Details</h5>
       </div>
       <div class="card-body">
         <div class="row">
@@ -322,8 +248,8 @@ const PropertyDetails = () => {
   <div class="container mt-4">
    
     <div class="card border-0 shadow-sm">
-      <div class="card-header bg-secondary text-dark">
-        <h5 class="mb-0">Features</h5>
+      <div class="card-header text-dark" style={{backgroundColor:'#F2F2F2'}}>
+        <h5 class="mb-0 fw-bold">Features</h5>
       </div>
       <div class="card-body">
         <div className='row'>
